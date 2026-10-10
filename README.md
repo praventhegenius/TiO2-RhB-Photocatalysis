@@ -1,25 +1,52 @@
-# TiO2-RhB-Photocatalysis-ML
+# TiO2-RhB-Photocatalysis
 
-Code and data for the machine-learning analysis in our manuscript on sunlight-driven photocatalytic degradation of Rhodamine B (RhB) using anatase TiO2 nanorods (ANR).
+Code and data for the paper:
 
-> **Paper:** *[Manuscript title]*, [Authors], [Journal], [Year]. DOI: [to be added]
+> **Explainable Machine Learning for Prediction and Optimization of Photocatalytic Rhodamine B Degradation over Anatase TiO₂ Nanorods under Diurnal Sunlight Irradiation**
+> Prathima Tanguturi Venkata, Pravenraam Shankar, Sanjhana Anandan, Anil Kumar Reddy Police, Chinna Gangi Reddy Nallagondu, Mamatha Kumari Murikinati, Vairamuthu Subbiah, Selva Rani Balasubramaniam, Sungjun Bae, Shankar Muthukonda Venkatakrishnan
+> *Journal of Cleaner Production* (under review, manuscript JCLEPRO-D-26-27397)
 
-The repository contains everything needed to reproduce the models, tables and figures reported in the paper and its Supplementary Information.
+The repository contains the full experimental dataset (Table S2) and the Python scripts (Table S4) used to train the models and produce the tables and figures in the paper and its Supplementary Information.
+
+<img width="1470" height="565" alt="GA updated final" src="https://github.com/user-attachments/assets/98960655-3cb5-4413-ae37-d02db861ac49" />
 
 ## Overview
 
-The analysis is a linked two-stage model:
+RhB decolorization over anatase TiO₂ nanorods was measured outdoors under natural sunlight at Yogi Vemana University, Kadapa, India. The data were collected in two stages and modelled separately:
 
-| Stage | Data | Inputs | Target |
-|---|---|---|---|
-| **Stage 1**: catalyst + reaction conditions | Sheet 1 (N = 312 training rows) | Calcination temperature, ramp rate and time (F1-F3), reaction time (F8), RhB concentration (F9), pH (F10), co-existing ions (F11), radical scavengers (F12) | Degradation efficiency (%) |
-| **Stage 2**: outdoor sunlight deployment | Sheet 2a (N = 192 rows) | Measured sunlight intensity (lux), reaction time, ambient temperature | Degradation efficiency (%) |
+| | Stage 1 | Stage 2 |
+|---|---|---|
+| Purpose | Catalyst synthesis and reaction conditions | Diurnal, seasonal and weather effects on the optimized catalyst (ANR-650-8-4) |
+| Runs × time points | 39 runs × 8 | 24 runs × 8 |
+| Observations | 312 | 192 |
+| Model inputs | F1-F3, F8-F12 (8 inputs) | F8, F9, F10 (3 inputs) |
+| Target | Degradation (decolorization) efficiency, % | Degradation (decolorization) efficiency, % |
 
-Stage 1 tells us which synthesis and operating conditions matter. Stage 2 takes the best catalyst (ANR-650-8-4) outdoors and models how sunlight intensity and temperature affect its performance across seasons and times of day.
+In total that is 504 observations from 63 runs. A further 80 observations from 10 repeatability, reproducibility and reusability runs (rows 8a-10d in Sheet 1) are held out from training and used only for external validation.
 
-Crystal phase, crystallite size, crystallinity and morphology (F4-F7) are **not** used as model inputs. In this dataset they are fully determined by the calcination recipe (F1-F3), so they are reported separately as a characterisation table.
+Nine regression models are compared for each stage: XGBoost, LightGBM, Gradient Boosting, Random Forest, Extra Trees, SVR (RBF), Gaussian Process, KNN and a stacked ensemble (Ridge meta-learner on out-of-fold predictions of the eight base models).
 
-Each stage compares nine regressors: XGBoost, LightGBM, Extra Trees, Random Forest, Gradient Boosting, SVR (RBF), Gaussian Process, KNN and a stacked ensemble.
+### Feature codes
+
+Feature codes follow Table S3 of the paper. Note that F9 and F10 mean different things in the two stages. The scripts use descriptive column names instead:
+
+| Code (paper) | Description | Column name in code |
+|---|---|---|
+| **Stage 1** | | |
+| F1 | Calcination temperature (°C) | `F1_CalcTemp` |
+| F2 | Calcination ramp (°C min⁻¹) | `F2_CalcRamp` |
+| F3 | Calcination time (h) | `F3_CalcTime` |
+| F8 | Irradiation time (min) | `F8_TimeStep` |
+| F9 | RhB concentration (×10⁻⁵ M) | `F9_RhBConc` |
+| F10 | Solution pH | `F10_pH` |
+| F11 | Co-existing ions (ppm) | `F11_Ions` |
+| F12 | Radical scavenger (coded) | `F12_Scavengers` |
+| **Stage 2** | | |
+| F8 | Irradiation time (min) | `F8_TimeStep` |
+| F9 | Average sunlight intensity (lux) | `SunlightLux` |
+| F10 | Ambient temperature (°C) | `Temperature_C` |
+
+F4-F7 (crystal phase, crystallite size, crystallinity, morphology) are kept in the dataset for reference but are not model inputs. They are written out separately as `07_catalyst_characterisation.csv`.
 
 ## Repository structure
 
@@ -28,14 +55,16 @@ TiO2-RhB-Photocatalysis-ML/
 ├── data/
 │   └── ANR_TiO2_RhB_dataset.xlsx      # full experimental dataset (Table S2)
 ├── src/
-│   ├── 01_linked_ml_pipeline.py       # data cleaning, Stage 1 + Stage 2 models, validation, SHAP
-│   ├── 02_chemistry_figures.py        # chemistry figures built on the trained models
-│   ├── 03_stage2_t50_analysis.py      # t50 (time to 50 % degradation) analysis of Stage 2 data
+│   ├── 01_linked_ml_pipeline.py       # cleaning, Stage 1 + Stage 2 models, validation, SHAP
+│   ├── 02_chemistry_figures.py        # DE optimization, sensitivity, nomogram and other model-based figures
+│   ├── 03_stage2_t50_analysis.py      # t50 analysis and counterfactual attribution (Stage 2)
 │   └── project_style.py               # shared plotting style
+├── docs/
+│   └── graphical_abstract.png
 ├── outputs/
 │   ├── tables/                        # CSV / JSON results
-│   ├── figures/                       # all generated figures (300 DPI PNG)
-│   └── models/final_models_v3.pkl     # fitted models used in the paper
+│   ├── figures/                       # generated figures (300 DPI PNG)
+│   └── models/final_models_v3.pkl     # fitted models
 ├── requirements.txt
 ├── LICENSE
 └── README.md
@@ -43,17 +72,19 @@ TiO2-RhB-Photocatalysis-ML/
 
 ## Dataset
 
-`data/ANR_TiO2_RhB_dataset.xlsx` contains five sheets:
+`data/ANR_TiO2_RhB_dataset.xlsx` is the Table S2 workbook. It has five sheets:
 
 | Sheet | Contents |
 |---|---|
-| `0.Fixed-Env.Vairables` | Fixed environmental constants |
-| `1. ANR_02-06-2026 (Vari-Long)` | Stage 1 data: synthesis parameters, reaction conditions and degradation over time, plus stability/reusability runs |
-| `(2) Fixed-Rxn.Vari` | Fixed reaction conditions for the outdoor (Stage 2) runs |
-| `2(a) ANR-23-05-2026 (SunInt)` | Stage 2 data: degradation vs time under natural sunlight with measured lux |
-| `(3) Temperature` | Measured ambient temperature for each weather condition and hour |
+| `0.Fixed-Env.Vairables` | Fixed experimental constants |
+| `1. ANR_02-06-2026 (Vari-Long)` | Stage 1 runs plus the repeatability / reproducibility / reusability runs |
+| `(2) Fixed-Rxn.Vari` | Fixed reaction conditions for the Stage 2 runs |
+| `2(a) ANR-23-05-2026 (SunInt)` | Stage 2 runs with measured sunlight intensity |
+| `(3) Temperature` | Hourly ambient temperature for each Stage 2 day |
 
-The sheet names are used directly by the scripts, so please don't rename them.
+The scripts read the sheets by name, so please don't rename them. The 0 min rows are dropped during cleaning (see `01_data_cleaning_log.csv`).
+
+Efficiency is decolorization at 554 nm, Efficiency (%) = (C₀ − Cₜ)/C₀ × 100. TOC and COD were not measured.
 
 ## Installation
 
@@ -67,7 +98,7 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-The versions in `requirements.txt` are pinned. Other versions will probably work, but matplotlib needs to be 3.10 or newer.
+Package versions are pinned in `requirements.txt`. Other versions will probably work, but matplotlib needs to be 3.10 or newer.
 
 ## Usage
 
@@ -79,66 +110,51 @@ python src/02_chemistry_figures.py       # needs the .pkl from step 1
 python src/03_stage2_t50_analysis.py     # independent, reads the dataset directly
 ```
 
-All outputs are written to `outputs/`. The full run takes about 5 minutes on a normal laptop, mostly because of the repeated cross-validation and the Gaussian process model.
+Everything is written to `outputs/`. A full run takes about 5 minutes on a normal laptop. All random seeds are fixed (`SEED = 42`).
 
-All random seeds are fixed (`SEED = 42`), so the numbers in `outputs/tables` should be reproduced exactly with the pinned package versions.
+## Where each paper figure comes from
 
-## Main outputs
+| Paper figure | Output file(s) in `outputs/figures/` | Script |
+|---|---|---|
+| Fig. 2 (a-d) model comparison | `fig_03a_model_comparison_stage1.png`, `fig_03b_model_comparison_stage2.png` | 01 |
+| Fig. 2 (e,f) train-validation gap | `fig_08_train_test_gap.png` | 01 |
+| Fig. 2 (g) learning curves | `fig_09_learning_curves.png` | 01 |
+| Fig. 3 SHAP importance | `fig_06a_shap_attribution_stage1.png`, `fig_06b_shap_attribution_stage2.png` | 01 |
+| Fig. 4 ion / scavenger response | `fig_N_counterfactual_stress.png` | 02 |
+| Fig. 5 synthesis design space | `fig_I_synthesis_surface.png`, `fig_B_temperature_response.png` | 02 |
+| Fig. 6 (a-d) residuals | `fig_07_residual_diagnostics.png` | 01 |
+| Fig. 6 (e,f) DE optimization | `fig_J_cross_stage_bridge.png` | 02 |
+| Fig. 7 (a-c) repeatability / reproducibility / reusability | `fig_G_stability_suite.png` | 02 |
+| Fig. 7 (d-k) OVAT sensitivity | `fig_K_OAT_response_surfaces.png` | 02 |
+| Fig. 8 (a) Stage 2 deployment | `fig_05_stage2_lux_temp.png` | 01 |
+| Fig. 8 (b,c) operational nomogram | `fig_M_time_to_target_nomogram.png` | 02 |
+| Fig. 9 t₅₀ by time of day, season, weather | `fig_T_t50_strata.png` | 03 |
+| Fig. 10 counterfactual attribution | `fig_V_caseAB_comparison.png` | 03 |
+| Fig. S1, S2 parity plots | `fig_01_stage1_parity.png`, `fig_02_stage2_parity.png` | 01 |
+| Fig. S3 Pearson correlation | `fig_R_pearson_heatmap.png`, `fig_R2_pearson_heatmap_stage2.png` | 02 |
+| Fig. S4 SHAP dependence | `fig_X_shap_dependence.png` | 02 |
 
-**Tables** (`outputs/tables/`)
-
-| File | Description |
-|---|---|
-| `01_data_cleaning_log.csv` | Rows removed or modified during cleaning |
-| `02_stage1_metrics.csv`, `03_stage2_metrics.csv` | CV metrics for all nine models (both CV schemes) |
-| `04_stability_RSD.csv` | Reproducibility (RSD) of the stability runs |
-| `05_holdout_validation.csv` | Repeated 80/20 random and group hold-out tests |
-| `06_shap_stage1.csv`, `06_shap_stage2.csv` | Mean absolute SHAP values per feature |
-| `07_catalyst_characterisation.csv` | Synthesis recipe vs measured catalyst properties (F4-F7) |
-| `08`-`13` | Catalyst ranking, interference, kinetic rate constants, linking validation, counterfactual stress test, season attribution |
-| `14_t50_dataset.csv`, `15_t50_model_comparison.csv` | t50 analysis |
-
-**Figures** (`outputs/figures/`): parity plots, model comparisons, residual diagnostics, learning curves, SHAP summaries and dependence plots, PCA, correlation heatmaps, kinetic fits, stability, operating guide heatmaps, response surfaces and the season analysis.
-
-## Results summary
-
-We report two cross-validation schemes for every model:
-
-- **Repeated K-fold (RKF)**: random 5-fold splits, repeated. This is the primary estimate.
-- **GroupKFold (GKF)**: whole experiments are held out together. This is a harder test of how well the model handles an experiment it has never seen, and the scores are much lower.
-
-Selected model (XGBoost):
-
-| | RKF R² | RKF MAE (%) | GKF R² | GKF MAE (%) |
-|---|---|---|---|---|
-| Stage 1 | 0.951 | 4.63 | 0.448 | 14.04 |
-| Stage 2 | 0.967 | 3.88 | 0.754 | 11.04 |
-
-The full comparison for all models is in `02_stage1_metrics.csv` and `03_stage2_metrics.csv`.
-
-## A note on SHAP
-
-SHAP values in this work describe how the trained model uses each input. They are a model attribution, not a mechanistic explanation of the photocatalysis, and should be read alongside the experimental evidence in the paper.
+The scripts also write some extra diagnostic figures that are not in the paper (PCA, OAT surfaces at other temperatures, season attribution and so on).
 
 ## Citation
 
-If you use this code or data, please cite:
+If you use this code or data, please cite the paper. Full citation details will be added once it is published.
 
 ```bibtex
-@article{[key],
-  title   = {[Manuscript title]},
-  author  = {[Authors]},
-  journal = {[Journal]},
-  year    = {[Year]},
-  doi     = {[DOI]}
+@article{tanguturivenkata2026anr,
+  title   = {Explainable Machine Learning for Prediction and Optimization of Photocatalytic Rhodamine B Degradation over Anatase TiO2 Nanorods under Diurnal Sunlight Irradiation},
+  author  = {Tanguturi Venkata, Prathima and Shankar, Pravenraam and Anandan, Sanjhana and Police, Anil Kumar Reddy and Nallagondu, Chinna Gangi Reddy and Murikinati, Mamatha Kumari and Subbiah, Vairamuthu and Balasubramaniam, Selva Rani and Bae, Sungjun and Muthukonda Venkatakrishnan, Shankar},
+  journal = {Journal of Cleaner Production},
+  year    = {2026},
+  note    = {Under review}
 }
 ```
 
 ## License
 
-The code is released under the MIT License (see `LICENSE`). If you reuse the dataset, please cite the paper above.
+The code is released under the MIT License (see `LICENSE`). If you reuse the dataset, please cite the paper.
 
 ## Contact
 
-Pravenraam Shankar, School of Computer Science and Engineering, VIT Vellore
-For questions about the code, please open an issue on this repository.
+- Code: Pravenraam Shankar, School of Computer Science and Engineering, VIT Vellore. Please open an issue on this repository.
+- Paper: Shankar Muthukonda Venkatakrishnan (corresponding author), shankar@yogivemanauniversity.ac.in
