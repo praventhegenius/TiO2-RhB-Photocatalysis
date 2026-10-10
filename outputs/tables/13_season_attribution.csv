@@ -1,0 +1,25 @@
+Weather,Hour,MeanDegEff_60,MedianLux,N
+Cloudy Winter,9,51.3,26600.0,8
+Cloudy Winter,10,56.9,44400.0,8
+Cloudy Winter,11,92.8,72500.0,8
+Cloudy Winter,12,93.8,54700.0,8
+Cloudy Winter,13,84.6,42500.0,8
+Cloudy Winter,14,91.3,28200.0,8
+Cloudy Winter,15,49.0,25400.0,8
+Cloudy Winter,16,41.7,22100.0,8
+Sunny Summer,9,100.0,119550.0,8
+Sunny Summer,10,100.0,127900.0,8
+Sunny Summer,11,100.0,134200.0,8
+Sunny Summer,12,100.0,134000.0,8
+Sunny Summer,13,100.0,128750.0,8
+Sunny Summer,14,100.0,121200.0,8
+Sunny Summer,15,96.0,110350.0,8
+Sunny Summer,16,71.0,98450.0,8
+Sunny Winter,9,94.0,88000.0,8
+Sunny Winter,10,96.0,106000.0,8
+Sunny Winter,11,99.0,118000.0,8
+Sunny Winter,12,98.0,120300.0,8
+Sunny Winter,13,100.0,127000.0,8
+Sunny Winter,14,99.0,132000.0,8
+Sunny Winter,15,92.0,119900.0,8
+Sunny Winter,16,67.0,76300.0,8

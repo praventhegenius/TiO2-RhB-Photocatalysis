@@ -1,0 +1,9 @@
+Feature,Mean_AbsSHAP_pct,Relative_pct
+F8_TimeStep,20.991,52.62
+F11_Ions,4.973,12.47
+F1_CalcTemp,4.451,11.16
+F12_Scavengers,3.682,9.23
+F9_RhBConc,2.065,5.18
+F10_pH,1.917,4.81
+F3_CalcTime,1.045,2.62
+F2_CalcRamp,0.768,1.93
