@@ -1,0 +1,10 @@
+Sheet,Stage,N,Note
+1,Raw,441,
+1,Drop t=0,392,-49 rows
+1,Clip neg→0,392,4 values
+1,Stage-1 training,312,(1a)-(7e) only
+1,Stability holdout,80,(8)-(10)
+2a,Raw,216,
+2a,Fix 13h labels,216,9 rows relabeled
+2a,Drop t=0,192,-24 rows
+2a,Clip neg→0,192,0 values

@@ -1,0 +1,23 @@
+Stage,Model,Role,Class,Scaling,Hyperparameters
+Stage 1,XGBoost,CV comparison / SE base learner,XGBRegressor,none,n_estimators=800; learning_rate=0.05; max_depth=6; min_child_weight=2; subsample=0.85; colsample_bytree=0.85; reg_alpha=0.1; reg_lambda=1.0; random_state=42
+Stage 1,LightGBM,CV comparison / SE base learner,LGBMRegressor,none,n_estimators=800; learning_rate=0.05; num_leaves=31; min_child_samples=5; subsample=0.85; subsample_freq=0; colsample_bytree=0.85; reg_alpha=0.1; reg_lambda=1.0; random_state=42
+Stage 1,ExtraTrees,CV comparison / SE base learner,ExtraTreesRegressor,none,n_estimators=600; min_samples_leaf=1; max_features=sqrt; random_state=42
+Stage 1,RandomForest,CV comparison / SE base learner,RandomForestRegressor,none,n_estimators=600; min_samples_leaf=1; max_features=sqrt; random_state=42
+Stage 1,GradientBoost,CV comparison / SE base learner,GradientBoostingRegressor,none,n_estimators=500; learning_rate=0.05; max_depth=5; min_samples_leaf=2; subsample=0.9; random_state=42
+Stage 1,SVR_RBF,CV comparison / SE base learner,SVR,inputs standardized (fitted on training folds),kernel=rbf; C=100; epsilon=1.5; gamma=scale
+Stage 1,GaussianProcess,CV comparison / SE base learner,GaussianProcessRegressor,target standardized; inputs unscaled,"kernel=Constant(1.0) x Matern(nu=2.5, length_scale=1.0, bounds 1e-2 to 1e3) + White(noise=0.1, bounds 1e-6 to 1e1); n_restarts_optimizer=10; alpha=1e-06; random_state=42"
+Stage 1,KNN,CV comparison / SE base learner,KNeighborsRegressor,inputs standardized (fitted on training folds),n_neighbors=5; weights=distance
+Stage 1,Stacked,Meta-learner on out-of-fold predictions,RidgeCV,none,"alphas=logspace(-3, 3, 100); alpha selected by efficient leave-one-out (RidgeCV default)"
+Stage 2,XGBoost,CV comparison / SE base learner,XGBRegressor,none,n_estimators=600; learning_rate=0.05; max_depth=5; min_child_weight=2; subsample=0.85; colsample_bytree=0.9; reg_alpha=0.05; reg_lambda=0.5; random_state=42
+Stage 2,LightGBM,CV comparison / SE base learner,LGBMRegressor,none,n_estimators=600; learning_rate=0.05; num_leaves=25; min_child_samples=4; subsample=0.85; subsample_freq=0; colsample_bytree=0.9; reg_alpha=0.05; reg_lambda=0.5; random_state=42
+Stage 2,ExtraTrees,CV comparison / SE base learner,ExtraTreesRegressor,none,n_estimators=500; min_samples_leaf=1; max_features=sqrt; random_state=42
+Stage 2,RandomForest,CV comparison / SE base learner,RandomForestRegressor,none,n_estimators=500; min_samples_leaf=1; max_features=sqrt; random_state=42
+Stage 2,GradientBoost,CV comparison / SE base learner,GradientBoostingRegressor,none,n_estimators=500; learning_rate=0.05; max_depth=4; min_samples_leaf=2; subsample=0.9; random_state=42
+Stage 2,SVR_RBF,CV comparison / SE base learner,SVR,inputs standardized (fitted on training folds),kernel=rbf; C=80; epsilon=1.0; gamma=scale
+Stage 2,GaussianProcess,CV comparison / SE base learner,GaussianProcessRegressor,target standardized; inputs unscaled,"kernel=Constant(1.0) x Matern(nu=2.5, length_scale=1.0, bounds 1e-2 to 1e3) + White(noise=0.1, bounds 1e-6 to 1e1); n_restarts_optimizer=10; alpha=1e-06; random_state=42"
+Stage 2,KNN,CV comparison / SE base learner,KNeighborsRegressor,inputs standardized (fitted on training folds),n_neighbors=5; weights=distance
+Stage 2,Stacked,Meta-learner on out-of-fold predictions,RidgeCV,none,"alphas=logspace(-3, 3, 100); alpha selected by efficient leave-one-out (RidgeCV default)"
+Stage 1,XGBoost,"Final model (validation, sensitivity, DE)",XGBRegressor,none,n_estimators=800; learning_rate=0.05; max_depth=6; min_child_weight=2; subsample=0.85; colsample_bytree=0.85; reg_alpha=0.1; reg_lambda=1.0; random_state=42
+Stage 1,XGBoost,SHAP model,XGBRegressor,none,n_estimators=800; learning_rate=0.05; max_depth=6; min_child_weight=2; subsample=0.85; colsample_bytree=0.85; reg_alpha=0.1; reg_lambda=1.0; random_state=42
+Stage 2,XGBoost,"Final model (nomogram, deployment figures)",XGBRegressor,none,n_estimators=600; learning_rate=0.05; max_depth=5; min_child_weight=2; subsample=0.85; colsample_bytree=0.9; reg_alpha=0.05; reg_lambda=0.5; random_state=42
+Stage 2,ExtraTrees,SHAP model,ExtraTreesRegressor,none,n_estimators=500; min_samples_leaf=1; max_features=sqrt; random_state=42

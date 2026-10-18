@@ -1,0 +1,2 @@
+objective,DE_F1_C,DE_F2_C_per_min,DE_F3_h,DE_predicted_pct,ANR_650_8_4_predicted_pct,grid_points,grid_points_within_0.5pct_of_optimum,plateau_F1_range_C,plateau_F2_range,plateau_F3_range_h,DE_settings
+"Stage-1 XGBoost predicted DegEff at 60 min, baseline reaction conditions",664.3560065271603,9.028147001700727,3.395332210081737,100.0,100.0,1701,760,550-690,2-10,1.0-4.5,"scipy differential_evolution, best1bin, popsize=25, maxiter=300, mutation=(0.5,1), recombination=0.7, tol=1e-7, polish=True, seed=42"

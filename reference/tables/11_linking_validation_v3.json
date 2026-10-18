@@ -1,0 +1,11 @@
+{
+  "DE_optimum_F1_CalcTemp_C": 664.3560065271603,
+  "DE_optimum_F2_CalcRamp_C_per_min": 9.028147001700727,
+  "DE_optimum_F3_CalcTime_h": 3.395332210081737,
+  "DE_optimum_predicted_DegEff_60min": 100.0,
+  "ANR_650_8_4_predicted_DegEff_60min": 100.0,
+  "ANR_650_8_4_empirical_mean_60min": 96.509,
+  "ANR_650_8_4_empirical_std_60min": 5.739,
+  "model_gap_pct": 0.0,
+  "note": "v3 Stage-1 DE search constrained to synthesis-input space (F1, F2, F3) only. F4-F7 are not model inputs."
+}
